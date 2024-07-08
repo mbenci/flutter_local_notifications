@@ -124,7 +124,7 @@ It has been reported that Samsung's implementation of Android has imposed a maxi
 
 ### iOS pending notifications limit
 
-There is a limit imposed by iOS where it will only keep 64 notifications that will fire the soonest.
+There is a limit imposed by iOS where it will only keep the 64 notifications that were last set on any iOS versions newer than 9. On iOS versions 9 and older, the 64 notifications that fire soonest are kept. [See here for more details.](http://ileyf.cn.openradar.appspot.com/38065340)
 
 ### Scheduled notifications and daylight saving time
 
@@ -180,7 +180,7 @@ Before proceeding, please make sure you are using the latest version of the plug
 
 ### Gradle setup
 
-Version 10+ on the plugin now relies on [desugaring](https://developer.android.com/studio/releases/gradle-plugin#j8-library-desugaring) to support scheduled notifications with backwards compatibility on older versions of Android. Developers will need to update their application's Gradle file at `android/app/build.gradle`. Please see the link on desugaring for details but the main parts needed in this Gradle file would be
+Version 10+ on the plugin now relies on [desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) to support scheduled notifications with backwards compatibility on older versions of Android. Developers will need to update their application's Gradle file at `android/app/build.gradle`. Please see the link on desugaring for details but the main parts needed in this Gradle file would be
 
 ```gradle
 android {
@@ -259,7 +259,7 @@ For apps that need the following functionality please complete the following in 
         </intent-filter>
     </receiver>
     ```
-* To use full-screen intent notifications, specify the `<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />` permission between the `<manifest>` tags.
+* To use full-screen intent notifications, specify the `<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />` permission between the `<manifest>` tags. Developers will also need to follow the instructions documented [here](#full-screen-intent-notifications)
 * To use notification actions, specify `<receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />` between the `<application>` tags so that the plugin can process the actions and trigger the appropriate callback(s)
 
 Developers can refer to the example app's `AndroidManifest.xml` to help see what the end result may look like. Do note that the example app covers all the plugin's supported functionality so will request more permissions than your own app may need
@@ -300,6 +300,8 @@ If your application needs the ability to schedule full-screen intent notificatio
 For reference, the example app's `AndroidManifest.xml` file can be found [here](https://github.com/MaikuB/flutter_local_notifications/blob/master/flutter_local_notifications/example/android/app/src/main/AndroidManifest.xml).
 
 Note that when a full-screen intent notification actually occurs (as opposed to a heads-up notification that the system may decide should occur), the plugin will act as though the user has tapped on a notification so handle those the same way (e.g. `onDidReceiveNotificationResponse` callback) to display the appropriate page for your application.
+
+Developers should also be across Google's requirements on using full-screen intents. Please refer to their documentation [here](https://source.android.com/docs/core/permissions/fsi-limits) for more information. Should you app need request permissions, the `AndroidFlutterNotificationsPlugin` class exposes the `requestFullScreenIntentPermission()` method that can be used to do so.
 
 ### Release build configuration
 
